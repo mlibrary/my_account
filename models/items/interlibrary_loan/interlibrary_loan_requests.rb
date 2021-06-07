@@ -7,7 +7,7 @@ class InterlibraryLoanRequests < Items
   def self.for(uniqname:, client: ILLiadClient.new)
     url = "/Transaction/UserRequests/#{uniqname}" 
     query = {}
-    query["$filter"] = "not startswith(TransactionStatus, 'Cancelled') and not endswith(TransactionStatus, 'Finished') and TransactionStatus ne 'Delivered to Web' and TransactionStatus ne 'Checked Out to Customer'"
+    query["$filter"] = "not startswith(TransactionStatus, 'Cancelled') and TransactionStatus ne 'Request Finished' and TransactionStatus ne 'Delivered to Web' and TransactionStatus ne 'Checked Out to Customer'"
 
     response = client.get(url, query)
     if response.code == 200
