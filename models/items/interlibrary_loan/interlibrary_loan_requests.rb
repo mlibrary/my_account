@@ -1,21 +1,15 @@
 class InterlibraryLoanRequests < Items
   def initialize(parsed_response:)
     super
-    actions = [
-      "Awaiting",
-      "In Transit",
-      "Pending",
-      "Queue",
-      "Request Sent",
-      "Searching",
-      "Submitted"
-    ]
-    @items = parsed_response.filter_map { |item| InterlibraryLoanRequest.new(item) if actions.any?{|action| item["TransactionStatus"].include?(action)}}
+    @items = parsed_response.map { |item| InterlibraryLoanRequest.new(item) }
   end
 
   def self.for(uniqname:, client: ILLiadClient.new)
     url = "/Transaction/UserRequests/#{uniqname}" 
-    response = client.get(url)
+    query = {}
+    query["$filter"] = "not startswith(TransactionStatus, 'Cancelled') and not endswith(TransactionStatus, 'Finished') and TransactionStatus ne 'Delivered to Web' and TransactionStatus ne 'Checked Out to Customer'"
+
+    response = client.get(url, query)
     if response.code == 200
       InterlibraryLoanRequests.new(parsed_response: response.parsed_response)
     else
