@@ -1,12 +1,15 @@
 class DocumentDelivery < Items
   def initialize(parsed_response:)
     super
-    @items = parsed_response.filter_map { |item| DocumentDeliveryItem.new(item) if item["RequestType"] == "Loan" && item["TransactionStatus"] != "Request Finished" }
+    @items = parsed_response.map { |item| DocumentDeliveryItem.new(item) }
   end
 
   def self.for(uniqname:, client: ILLiadClient.new)
     url = "/Transaction/UserRequests/#{uniqname}" 
-    response = client.get(url)
+    query = {}
+    query["$filter"] = "RequestType eq 'Loan' and TransactionStatus eq 'Delivered to Web'"
+    
+    response = client.get(url, query)
     if response.code == 200
       DocumentDelivery.new(parsed_response: response.parsed_response)
     else
