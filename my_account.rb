@@ -359,7 +359,7 @@ namespace '/fines-and-fees' do
   get '' do
     if session[:in_alma]
       fines = Fines.for(uniqname: session[:uniqname])
-      erb :fines, :locals => { fines: fines }
+      erb :fines, :locals => { fines: fines, has_js: true }
     else
       erb :empty_state
     end

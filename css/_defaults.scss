@@ -61,6 +61,11 @@ th {
   text-transform: uppercase;
 }
 
+tfoot td {
+  border-bottom: 0;
+  border-top: solid 2px var(--color-maize-400);
+}
+
 th,
 td {
   padding: var(--space-medium);

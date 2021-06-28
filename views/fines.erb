@@ -7,6 +7,7 @@
 
   <form action="/fines-and-fees/pay" method="post" class="owl">
     <div class="table-container">
+      <label><input type="checkbox"> Select / Deselect all fines and fees</label>
       <table>
         <thead>
           <tr>
@@ -19,13 +20,23 @@
         <tbody>
         <% fines.each_with_index do |fine,index| %>
           <tr>
-            <td><input type="checkbox" name="fines[<%=index%>]" value="<%=fine.id%>" id="<%=fine.id%>" aria-label="Select to pay <%=fine.id%>"></td>
+            <td><input type="checkbox" name="fines[<%=index%>]" value="<%=fine.id%>" id="<%=fine.id%>" aria-label="Select to pay <%=fine.id%>" data-js-balance="<%= fine.balance %>"></td>
             <td><%= fine.title %></td>
             <td><%= fine.type %></td>
             <td><span style="color: var(--color-pink-500);">$<%= fine.balance %></span></td>
           </tr>
         <% end %>
         </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3" style="text-align: right;">
+              Your total due is
+            </td>
+            <td>
+              <span style="color: var(--color-pink-500);">$<%=fines.total_sum_in_dollars%></span>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
 
